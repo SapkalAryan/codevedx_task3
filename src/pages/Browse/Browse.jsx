@@ -4,8 +4,8 @@ import Navbar from "../../components/Navbar/Navbar";
 import MovieRow from "../../components/MovieRow/MovieRow";
 import RecommendedMovies from "../../features/recommended/components/RecommendedMovies";
 import Header from "../../components/Header/Header";
-import { getPopularMovies, getTopRatedMovies, getTrendingMovies } from "../../services/tmdb";
-import { getRecommendations } from "../../utils/recommendationEngine";
+import MovieService from "../../services/movie";
+import RecommendationService from "../../services/recommendation/RecommendationService";
 
 function Browse() {
 
@@ -14,14 +14,12 @@ function Browse() {
   const [topRated, setTopRated] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
-
-async function loadMovies() {
+  async function loadMovies() {
 
     const [recommendedData, trendingData, topRatedData] = await Promise.all([
-      getRecommendations(),
-      getTrendingMovies(),
-      getTopRatedMovies(),
+      RecommendationService.getRecommendations(),
+      MovieService.getTrending(),
+      MovieService.getTopRated(),
     ]);
 
     setRecommended(recommendedData);
@@ -47,7 +45,7 @@ async function loadMovies() {
 
   return (
     <>
-      <Header/>
+      <Header />
       <div className="browse-page">
 
 

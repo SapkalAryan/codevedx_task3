@@ -4,7 +4,7 @@ import Header from "../../components/Header/Header";
 import Navbar from "../../components/Navbar/Navbar";
 import MovieCard from "../../components/MovieCard/MovieCard";
 import FilterPanel from "../../components/FilterPanel/FilterPanel";
-import { searchMovies, discoverMovies } from "../../services/tmdb";
+import MovieService from "../../services/movie";
 import {
   getRecentSearches,
   addRecentSearch,
@@ -195,9 +195,12 @@ function Search() {
     try {
       let data;
       if (trimmedQuery) {
-        data = await searchMovies(trimmedQuery, pageToFetch);
+        data = await MovieService.search(trimmedQuery, pageToFetch);
       } else {
-        data = await discoverMovies(debouncedFilters, pageToFetch);
+        data = await MovieService.discover(
+          debouncedFilters,
+          pageToFetch
+        );
       }
 
       let fetchedResults = data.results || [];
@@ -268,7 +271,10 @@ function Search() {
     setMatchSearched(true);
 
     try {
-      const data = await discoverMovies(merged, pageToFetch);
+      const data = await MovieService.discover(
+        merged,
+        pageToFetch
+      );
       let fetchedResults = data.results || [];
 
       if (merged.languageOptions) {

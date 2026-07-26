@@ -1,28 +1,34 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import MovieCard from "../../components/MovieCard/MovieCard";
 import Navbar from "../../components/Navbar/Navbar";
-import {
-  getWatchlist,
-  removeFromWatchlist,
-} from "../../services/watchlistStorage";
-import { invalidateRecommendationCache } from "../../utils/recommendationEngine";
+import useWatchlist from "../../hooks/useWatchlist";
+import { useWatchlistContext } from "../../context/WatchlistContext";
 
 function Watchlist() {
-  const [watchlist, setWatchlist] = useState([]);
-  const navigate = useNavigate();
+  const { watchlist } = useWatchlistContext();
 
-  useEffect(() => {
-    setWatchlist(getWatchlist());
-  }, []);
+  function WatchlistMovie({ movie }) {
+    const { remove } = useWatchlist(movie);
 
-function handleRemove(e, movieId) {
-    e.preventDefault();
-    e.stopPropagation();
-    const updated = removeFromWatchlist(movieId);
-    setWatchlist(updated);
-    invalidateRecommendationCache();
+    function handleRemove(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      remove();
+    }
+
+    return (
+      <div className="watchlist-card-wrapper">
+        <MovieCard movie={movie} />
+
+        <button
+          className="watchlist-remove-btn"
+          onClick={handleRemove}
+          aria-label="Remove from watchlist"
+        >
+          ✕
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -40,16 +46,10 @@ function handleRemove(e, movieId) {
 
         <div className="results-grid">
           {watchlist.map((movie) => (
-            <div key={movie.id} className="watchlist-card-wrapper">
-              <MovieCard movie={movie} />
-              <button
-                className="watchlist-remove-btn"
-                onClick={(e) => handleRemove(e, movie.id)}
-                aria-label="Remove from watchlist"
-              >
-                ✕
-              </button>
-            </div>
+            <WatchlistMovie
+              key={movie.id}
+              movie={movie}
+            />
           ))}
         </div>
       </div>

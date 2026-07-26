@@ -1,30 +1,27 @@
-const STORAGE_KEY = "cinebuddy_watchlist";
+import BaseStorage from "./storage/BaseStorage";
+
+const storage = new BaseStorage("cinebuddy_watchlist");
 
 export function getWatchlist() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return storage.getAll();
 }
 
 export function addToWatchlist(movie) {
-  const current = getWatchlist();
-  const already = current.some((m) => m.id === movie.id);
-  if (already) return current;
+  const current = storage.getAll();
 
-  const updated = [movie, ...current];
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  return updated;
+  if (current.some((m) => m.id === movie.id)) {
+    return current;
+  }
+
+  return storage.save([movie, ...current]);
 }
 
 export function removeFromWatchlist(movieId) {
-  const updated = getWatchlist().filter((m) => m.id !== movieId);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  return updated;
+  return storage.save(
+    storage.getAll().filter((movie) => movie.id !== movieId)
+  );
 }
 
 export function isInWatchlist(movieId) {
-  return getWatchlist().some((m) => m.id === movieId);
+  return storage.getAll().some((movie) => movie.id === movieId);
 }

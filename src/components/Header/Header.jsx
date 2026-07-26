@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { FaCheckCircle } from "react-icons/fa";
+// No imports required
 
 function Header() {
   return (
@@ -8,10 +7,6 @@ function Header() {
         <span className="app-header-logo">🎬</span>
         <h1 className="app-header-title">Cine Buddy</h1>
       </div>
-
-      <Link to="/my-movies" className="app-header-btn" aria-label="My Movies">
-        <FaCheckCircle />
-      </Link>
     </header>
   );
 }

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { FaHome, FaBookmark, FaSearch } from "react-icons/fa";
+import { FaHome, FaBookmark, FaCheckCircle, FaSearch } from "react-icons/fa";
 
 function Navbar() {
     return (
@@ -24,6 +24,16 @@ function Navbar() {
             >
                 <FaBookmark />
                 <span>Watchlist</span>
+            </NavLink>
+
+            <NavLink
+                to="/my-movies"
+                className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                }
+            >
+                <FaCheckCircle />
+                <span>My Movies</span>
             </NavLink>
 
             <NavLink

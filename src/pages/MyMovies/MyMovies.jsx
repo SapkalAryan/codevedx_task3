@@ -1,27 +1,35 @@
-import { useState, useEffect } from "react";
 import Header from "../../components/Header/Header";
 import MovieCard from "../../components/MovieCard/MovieCard";
 import Navbar from "../../components/Navbar/Navbar";
-import {
-  getWatched,
-  removeFromWatched,
-} from "../../services/watchedStorage";
-import { invalidateRecommendationCache } from "../../utils/recommendationEngine";
+import { useWatchedContext } from "../../context/WatchedContext";
+import useWatched from "../../hooks/useWatched";
 
-function MyMovies() {
-  const [watched, setWatched] = useState([]);
+function WatchedMovie({ movie }) {
+  const { remove } = useWatched(movie);
 
-  useEffect(() => {
-    setWatched(getWatched());
-  }, []);
-
-  function handleRemove(e, movieId) {
+  function handleRemove(e) {
     e.preventDefault();
     e.stopPropagation();
-    const updated = removeFromWatched(movieId);
-    setWatched(updated);
-    invalidateRecommendationCache();
+    remove();
   }
+
+  return (
+    <div className="watchlist-card-wrapper">
+      <MovieCard movie={movie} />
+
+      <button
+        className="watchlist-remove-btn"
+        onClick={handleRemove}
+        aria-label="Remove from watched"
+      >
+        ✕
+      </button>
+    </div>
+  );
+}
+
+function MyMovies() {
+  const { watched } = useWatchedContext();
 
   return (
     <>
@@ -38,16 +46,10 @@ function MyMovies() {
 
         <div className="results-grid">
           {watched.map((movie) => (
-            <div key={movie.id} className="watchlist-card-wrapper">
-              <MovieCard movie={movie} />
-              <button
-                className="watchlist-remove-btn"
-                onClick={(e) => handleRemove(e, movie.id)}
-                aria-label="Remove from watched"
-              >
-                ✕
-              </button>
-            </div>
+            <WatchedMovie
+              key={movie.id}
+              movie={movie}
+            />
           ))}
         </div>
       </div>

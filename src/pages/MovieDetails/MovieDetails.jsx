@@ -1,38 +1,34 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaBookmark, FaRegBookmark, FaPlay } from "react-icons/fa";
-import {
-  getMovieDetails,
-  getMovieCredits,
-  getMovieVideos,
-  getSimilarMovies,
-} from "../../services/tmdb";
-import {
-  addToWatchlist,
-  removeFromWatchlist,
-  isInWatchlist,
-} from "../../services/watchlistStorage";
-import {
-  addToWatched,
-  removeFromWatched,
-  isWatched,
-} from "../../services/watchedStorage";
-import { invalidateRecommendationCache } from "../../utils/recommendationEngine";
+
+import MovieService from "../../services/movie";
 import MovieRow from "../../components/MovieRow/MovieRow";
 import Navbar from "../../components/Navbar/Navbar";
 import Header from "../../components/Header/Header";
+import useWatchlist from "../../hooks/useWatchlist";
+import useWatched from "../../hooks/useWatched";
+
 
 function MovieDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [movie, setMovie] = useState(null);
+
+  const {
+    inWatchlist,
+    toggle: toggleWatchlist,
+  } = useWatchlist(movie);
+
+  const {
+    inWatched,
+    toggle: toggleWatched,
+  } = useWatched(movie);
+
   const [credits, setCredits] = useState(null);
   const [trailer, setTrailer] = useState(null);
   const [similar, setSimilar] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [inWatchlist, setInWatchlist] = useState(false);
-  const [inWatched, setInWatched] = useState(false);
 
   useEffect(() => {
     loadAll();
@@ -44,17 +40,15 @@ function MovieDetails() {
 
     const [detailsData, creditsData, videosData, similarData] =
       await Promise.all([
-        getMovieDetails(id),
-        getMovieCredits(id),
-        getMovieVideos(id),
-        getSimilarMovies(id),
+        MovieService.getDetails(id),
+        MovieService.getCredits(id),
+        MovieService.getVideos(id),
+        MovieService.getSimilar(id),
       ]);
 
     setMovie(detailsData);
     setCredits(creditsData);
     setSimilar(similarData.results || []);
-    setInWatchlist(isInWatchlist(Number(id)));
-    setInWatched(isWatched(Number(id)));
 
     const officialTrailer =
       videosData.results?.find(
@@ -66,29 +60,11 @@ function MovieDetails() {
   }
 
   function handleWatchlistToggle() {
-    if (inWatchlist) {
-      removeFromWatchlist(movie.id);
-      setInWatchlist(false);
-    } else {
-      addToWatchlist(movie);
-      setInWatchlist(true);
-    }
-    invalidateRecommendationCache();
+    toggleWatchlist();
   }
 
   function handleWatchedToggle() {
-    if (inWatched) {
-      removeFromWatched(movie.id);
-      setInWatched(false);
-    } else {
-      addToWatched(movie);
-      setInWatched(true);
-      if (inWatchlist) {
-        removeFromWatchlist(movie.id);
-        setInWatchlist(false);
-      }
-    }
-    invalidateRecommendationCache();
+    toggleWatched();
   }
 
   if (loading) {
@@ -121,7 +97,7 @@ function MovieDetails() {
   return (
     <>
       <Header />
-      
+
       <div className="movie-details-page">
 
         <div className="details-backdrop">

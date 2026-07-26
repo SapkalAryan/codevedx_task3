@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getGenres } from "../../services/tmdb";
+import MovieService from "../../services/movie";
 
 const CURRENT_YEAR = new Date().getFullYear();
 const MIN_YEAR = 1950;
@@ -26,7 +26,7 @@ function FilterPanel({ filters, onChange }) {
   }, []);
 
   async function loadGenres() {
-    const data = await getGenres();
+    const data = await MovieService.getGenres();
     setGenres(data.genres || []);
     setGenresLoading(false);
   }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../../components/Header/Header";
 import Navbar from "../../components/Navbar/Navbar";
 import MovieCard from "../../components/MovieCard/MovieCard";
-import { getRecommendations } from "../../utils/recommendationEngine";
+import RecommendationService from "../../services/recommendation/RecommendationService";
 
 function RecommendedAll() {
   const [movies, setMovies] = useState([]);
@@ -13,7 +13,7 @@ function RecommendedAll() {
   }, []);
 
   async function loadRecommendations() {
-    const data = await getRecommendations();
+    const data = await RecommendationService.getRecommendations();
     setMovies(data);
     setLoading(false);
   }
