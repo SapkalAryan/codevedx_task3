@@ -25,7 +25,7 @@ export const generateAccessToken = (user) => {
         createPayload(user),
         env.JWT_SECRET,
         {
-            expiresIn: "15m"
+            expiresIn: "59m"
         }
     );
 

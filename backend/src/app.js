@@ -7,6 +7,7 @@ import notFoundHandler from "./middleware/notFound.middleware.js";
 import errorHandler from "./middleware/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import watchlistRoutes from "./routes/watchlist.routes.js";
 
 const app = express();
 
@@ -40,6 +41,8 @@ app.get("/api/v1/health", (req, res) => {
 app.use("/api/v1/auth", authRoutes);
 
 app.use("/api/v1/users", userRoutes);
+
+app.use("/api/v1/watchlist", watchlistRoutes);
 
 app.use(notFoundHandler);
 
