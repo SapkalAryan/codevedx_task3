@@ -36,10 +36,35 @@ const userSchema = new mongoose.Schema(
             default: "user"
         },
 
+        preferences: {
+
+            favoriteGenres: {
+                type: [String],
+                default: []
+            },
+
+            favoriteLanguages: {
+                type: [String],
+                default: []
+            },
+
+            favoriteStreamingServices: {
+                type: [String],
+                default: []
+            },
+
+            favoriteDecades: {
+                type: [String],
+                default: []
+            }
+
+        },
+
         refreshToken: {
             type: String,
             default: null
         }
+
     },
     {
         timestamps: true
