@@ -34,20 +34,25 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ["user", "admin"],
             default: "user"
+        },
+
+        refreshToken: {
+            type: String,
+            default: null
         }
     },
     {
         timestamps: true
     }
 );
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
+
     if (!this.isModified("password")) {
-        return next();
+        return;
     }
 
     this.password = await bcrypt.hash(this.password, 10);
 
-    next();
 });
 userSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);

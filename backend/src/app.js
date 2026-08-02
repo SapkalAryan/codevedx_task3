@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import notFoundHandler from "./middleware/notFound.middleware.js";
 import errorHandler from "./middleware/error.middleware.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -22,9 +23,11 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 app.get("/api/v1/health", (req, res) => {
+    // console.log("===== HEALTH ROUTE HIT =====");
+
     res.status(200).json({
         success: true,
-        message: "Cine Buddy Backend Running"
+        message: "Health route reached"
     });
 });
 
@@ -34,10 +37,10 @@ app.get("/api/v1/health", (req, res) => {
 |--------------------------------------------------------------------------
 */
 
-// Must come AFTER all routes
+app.use("/api/v1/auth", authRoutes);
+
 app.use(notFoundHandler);
 
-// Must be LAST
 app.use(errorHandler);
 
 export default app;
