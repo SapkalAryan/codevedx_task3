@@ -8,6 +8,7 @@ import errorHandler from "./middleware/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import watchlistRoutes from "./routes/watchlist.routes.js";
+import watchedRoutes from "./routes/watched.routes.js";
 
 const app = express();
 
@@ -43,6 +44,8 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 
 app.use("/api/v1/watchlist", watchlistRoutes);
+
+app.use("/api/v1/watched", watchedRoutes);
 
 app.use(notFoundHandler);
 
